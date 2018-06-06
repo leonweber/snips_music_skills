@@ -9,7 +9,7 @@ import io
 
 
 RADIOS = {
-        "radio one": "http://radioeins.de/stream"
+        #"radio one": "http://radioeins.de/stream"
         }
 
 CONFIGURATION_ENCODING_FORMAT = "utf-8"
