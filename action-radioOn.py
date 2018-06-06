@@ -5,11 +5,12 @@ import ConfigParser
 from hermes_python.hermes import Hermes
 from hermes_python.ontology import *
 import io
+from mpd import MPDClient
 
 
 
 RADIOS = {
-        #"radio one": "http://radioeins.de/stream"
+        "radio one": "http://radioeins.de/stream"
         }
 
 CONFIGURATION_ENCODING_FORMAT = "utf-8"
@@ -35,10 +36,17 @@ def subscribe_intent_callback(hermes, intentMessage):
 
 
 def action_wrapper(hermes, intentMessage, conf):
+    cl = MPDClient()
+    cl.timeout = 10
+    cl.idletimeout = None
+    cl.connect("localhost", 6600)
     current_session_id = intentMessage.session_id
     radio_name = intentMessage.slots.radio_name[0].raw_value
     if radio_name in RADIOS:
-        subprocess.call(["mplayer", RADIOS[radio_name]])
+        cl.add(RADIOS[radio_name])
+        cl.play()
+        cl.close()
+        cl.disconnect()
     else:
         hermes.publish_end_session(current_session_id, "Sorry, I could not find a radio with the name " + radio_name)
 

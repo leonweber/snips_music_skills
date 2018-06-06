@@ -5,7 +5,7 @@ import ConfigParser
 from hermes_python.hermes import Hermes
 from hermes_python.ontology import *
 import io
-
+from mpd import MPDClient
 
 CONFIGURATION_ENCODING_FORMAT = "utf-8"
 CONFIG_INI = "config.ini"
@@ -31,7 +31,14 @@ def subscribe_intent_callback(hermes, intentMessage):
 
 def action_wrapper(hermes, intentMessage, conf):
     current_session_id = intentMessage.session_id
-    subprocess.call(["pkill", "mplayer"])
+    cl = MPDClient()
+    cl.timeout = 10
+    cl.idletimeout = None
+    cl.connect("localhost", 6600)
+    cl.stop()
+    cl.close()
+    cl.disconnect()
+
 
 
 if __name__ == "__main__":
